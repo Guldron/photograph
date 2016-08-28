@@ -1,0 +1,10 @@
+.idea
+node_modules
+public
+14580644394070.png
+app/bower_components/angular
+app/bower_components/angular-ui-router
+app/bower_components/jquery
+app/bower_components/ng-file-upload
+app/bower_components/photoswipe
+app/bower_components/semantic
