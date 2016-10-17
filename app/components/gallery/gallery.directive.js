@@ -2,6 +2,7 @@
 (function(){
 'use strict';
 
+
 function gallery() {
 		function link(scope, element, attrs) {
 

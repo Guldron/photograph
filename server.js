@@ -1,22 +1,23 @@
 var express = require('express');
 var mongoose = require('mongoose');
-var fs = require('fs');
+    mongoose.connect('mongodb://127.0.0.1:27017/data/db');
 var app = express();
-var Tabs = require('./tabsModel');
+var fs = require('fs');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var db = mongoose.createConnection('mongodb://127.0.0.1:27017/data/db');
-var bodyParser = require('body-parser');
-var multer = require('multer');
+var storage = multer.memoryStorage();
+var upload = multer({ storage: storage });
 
-var Schema = mongoose.Schema;
-var pictureSchema = new Schema({
-                            value: Number,
-                            img: Buffer,
-                            contentType: String   
-                        });
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+        console.log('connect to db')
+});
 
-var PictureModel = db.model('pictureModel', pictureSchema);
+var Tabs = require('./models/tabsModel');
+var ImageModel = require('./models/ImageModel');
+
+app.use(require('connect-livereload')());
 
 app.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "http://localhost");
@@ -26,19 +27,62 @@ app.use(function(req, res, next) {
 app.use(express.static('./public'));
 app.use(bodyParser.json());
 
-var storage = multer.memoryStorage()
-var upload = multer({ storage: storage })
-
-app.post('/upload', upload.any(), function(req, res) {
-        console.log(req.files[0])
-        var picture = new PictureModel ({
-                value: 5, 
-                img: fileBuffer = req.files[0].buffer,
-                contentType: "image/png"
+//---------------------------
+//image gallery upload routes
+//---------------------------
+app.get('/admin/gallery', function(req, res) {
+        ImageModel.find({size: 'small'}, function (err, doc) {
+                if(!err) {
+                        res.send(doc);
+                } else {
+                        res.send(err);
+                };
         });
-
-        picture.save();
 });
+
+app.post('/admin/gallery', upload.any(), function(req, res) {
+        var image = new ImageModel({
+                img: fileBuffer = req.files[0].buffer,
+                name: req.body.otherInfo.name,
+                size: req.body.otherInfo.size
+        });
+        image.save(function (err) {
+                if(!err) {
+                        res.send(req.body.otherInfo.name + " is saved in DB");
+                } else {
+                        res.send(err);
+                };
+        });
+});
+
+app.delete('/admin/gallery/', function(req, res) {
+                ImageModel.remove({}, function (err) {
+                        if(!err) {
+                                res.send('All images in gallery are deleted');
+                        } else {
+                                res.send(err);
+                        };
+                });                  
+});
+
+app.delete('/admin/gallery/:name', function(req, res) {                           
+                ImageModel.remove({name: req.params.name}, function(err, suc){
+                        if(!err) {
+                                res.send({
+                                        name: req.params.name,
+                                        doc: suc   
+                                    });
+                        } else {
+                                res.send(err);
+                        };
+                });
+               
+});
+//----------------------------------
+//end of image gallery upload routes
+//----------------------------------
+
+
 
 app.get('/', function(req, res) {
     res.sendFile('D:/Work/photograph/public/index.html');
@@ -49,15 +93,26 @@ app.get('/tabs', function(req, res) {
     res.json(Tabs);
 });
 
-app.get("/images", function(req,res) {
-    PictureModel.find({}, function (err, doc) {
-        console.log(doc)
-            res.send(doc);
-    });
+app.get('/gallery', function(req, res) {
+        ImageModel.find({size: 'small'}, function (err, doc) {
+                if(!err) {
+                        res.send(doc);
+                } else {
+                        res.send(err);
+                };
+        });
+});
+
+app.get('/gallery/:name', function(req, res) {
+        ImageModel.find({name: req.params.name,size: 'normal'}, function (err, doc) {
+                if(!err) {
+                        res.send(doc);
+                } else {
+                        res.send(err);
+                };
+        });
 });
 
 app.listen('3000', function(){
         console.log('running on 3000...');
-    });
-
-
+});

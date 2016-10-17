@@ -12,12 +12,13 @@ function config($stateProvider, $urlRouterProvider) {
                         url: "/about", 
                         templateUrl: "vendor/templates/about.directive.html",
                         controller: "aboutController"
-                        /*resolve: {getDropDownData: getDropDownData}*/
                 })
                 .state('gallery', {
                         url: "/gallery",
                         templateUrl: "vendor/templates/gallery.directive.html",
-                        controller: "galleryController"
+                        controllerAs: 'gallery',
+                        controller: 'galleryController',
+                        resolve: { getImageGalleryData: getImageGalleryData }
                 })
                 .state('services', {
                         url: "/services"
@@ -29,8 +30,15 @@ function config($stateProvider, $urlRouterProvider) {
                 })
 };
 
+getImageGalleryData.$inject = ['dataservice']; 
 
-
+function getImageGalleryData(dataservice) {
+        var url = '/gallery';
+        return dataservice.getData(url)
+        .then(function(data){
+                return data;
+        });
+};
 
 angular
         .module('app')

@@ -2,8 +2,10 @@
 (function(){
 'use strict';
 
-function galleryController () {
+galleryController.$inject = ['$scope', 'getImageGalleryData'];      
 
+function galleryController ($scope, getImageGalleryData) {
+		this.imageGalleryData = getImageGalleryData;
 };
 
 angular

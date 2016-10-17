@@ -1,19 +1,21 @@
 'use strict';
 
 var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
+var connect = require('gulp-connect');
 var bower = require('gulp-bower');
 var concat = require('gulp-concat');
 var concatCss = require('gulp-concat-css');
 var uglify = require('gulp-uglify');
 var cleanCSS = require('gulp-clean-css');
 var ngAnnotate = require('gulp-ng-annotate');
+var gls = require('gulp-live-server');
 var livereload = require('gulp-livereload');
 
 var path = {
 		js : ['app/app.module.js',
 			  'app/app.router.js',
 			  'app/app.dataservice.js',
+			  'app/app.objectUrlMaker.js',
 			  'app/components/**/*.js'
 			  ],
 
@@ -38,10 +40,11 @@ var path = {
 					 'app/components/slider/slider.directive.html',
 					 'app/components/gallery/gallery.directive.html',
 					 'app/components/admin/admin.directive.html',
-					 'app/components/photo-album/photo-album.directive.html'] 
+					 'app/components/image-gallery/image-gallery.directive.html',
+					 'app/components/gallery-upload/gallery-upload.directive.html'] 
 };
 
-livereload({ start: true })
+livereload({ start: true });
 
 gulp.task('bower', function() {
 		return bower();
@@ -54,10 +57,6 @@ gulp.task('bowerComponents', function() {
 		        .pipe(livereload());
 });
 
-gulp.task('html', function() {
-		gulp.src('public/**/*.html')
-		        .pipe(livereload());
-});
 
 gulp.task('js', function() {
 		gulp.src(path.js)
@@ -83,13 +82,28 @@ gulp.task('templates', function() {
 		        .pipe(livereload());
 });
 
+// gulp.task('server', function () {
+//     var options = {
+//         cwd: undefined
+//     };
+//     options.env = process.env;
+//     options.env.NODE_ENV = 'development';
+//     var server = gls('server.js', options, 35729);
+//     server.start();
+
+//     gulp.watch(['public/**/*.html', 'public/**/*.js', 'public/**/*.css'], function(file) {
+//         server.start.bind(server)();
+//         server.notify.bind(server)(file);
+//         console.log('refresh')
+//     });
+// });
+
 gulp.task('watch', function () {
-	livereload.listen()
-    gulp.watch(path.bowerComponents, ['bowerComponents'])
-    gulp.watch(path.templates, ['templates'])
-    gulp.watch(path.css, ['css'])
-    gulp.watch(path.js, ['js'])
-  	gulp.watch('public/**/*.html', ['html'])
+	livereload.listen();
+    gulp.watch(path.bowerComponents, ['bowerComponents']);
+    gulp.watch(path.templates, ['templates']);
+    gulp.watch(path.css, ['css']);
+    gulp.watch(path.js, ['js']);
 });
 
 gulp.task('default', ['bower', 'bowerComponents', 'js', 'css', 'templates', 'watch']);

@@ -15,8 +15,8 @@ function tabsController ($scope, dataservice, $http) {
 	            .then(function(data){
 	            return $scope.tabsData = data.tabs["0"];
         });
-    };
-};
+    }
+}
 
 angular
 		.module('app')
