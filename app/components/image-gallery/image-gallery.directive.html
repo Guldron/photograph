@@ -1,6 +1,6 @@
-<div class="my-image-gallery ui grid">
-		<div ng-repeat="i in imgGal.smallImages" class="ui">
-				<img ng-src="{{i.img}}" ng-click="imgGal.galleryInit(i.name, $index, imgGal.normalImages, imgGal.smallImages, imgGal.promises) "class="ui images"/>
+<div class="ui center aligned grid vertically padded">
+		<div ng-repeat="i in imgGal.smallImages">
+				<img ng-src="{{i.img}}" ng-click="imgGal.galleryInit(i.name, $index, imgGal.normalImages, imgGal.smallImages, imgGal.promises)" class="ui images"/>
 		</div>
 </div>
 

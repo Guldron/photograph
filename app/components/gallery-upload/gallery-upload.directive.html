@@ -1,20 +1,22 @@
 <div class="ui container">
-		<button class="ui button" ng-click="getImages()">Get all images</button>
+	<button class="ui button" ng-click="getImages()">Get all images</button>
 
-		<button class="ui button" ng-click="deleteAllImages()">Delete all</button>
-
+	<button class="ui button" ng-click="deleteAllImages()">Delete all</button>
+	<div class="ui vertically padded grid three columns">
 		<div class="ui container" ng-repeat="i in imageUrl">
 				<img ng-src="{{i.img}}">
 				<button ng-click="deleteSingleImage(i.name)">Remove</button>
-		</div>
+		</div>	
+	</div>
+		
 
       	<form class="ui form" name="form">
-				<div class="ui button" ngf-select ng-model="images" ngf-multiple="true" name="images">Select</div>
-				<div ng-repeat="i in images">
-						<img ngf-resize="{width: 120, height: 80, quality: 0.9}" ngf-src="i" class="thumb">
-						<button ng-click="removeUploadImage(i.name)" ng-show="i">Remove</button>  
-				</div>
-				<button class="ui button" type="submit" ng-click="upload(images)">Submit</button>
+			<div class="ui button" ngf-select ng-model="images" ngf-multiple="true" name="images">Select</div>
+			<div ng-repeat="i in images">
+					<img ngf-resize="{width: 120, height: 80, quality: 0.9}" ngf-src="i" class="thumb">
+					<button ng-click="removeUploadImage(i.name)" ng-show="i">Remove</button>  
+			</div>
+			<button class="ui button" type="submit" ng-click="upload(images)">Submit</button>
 		</form>
 		
 </div>

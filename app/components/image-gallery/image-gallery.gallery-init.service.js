@@ -19,29 +19,49 @@
                         
                         var pswpElement = document.querySelectorAll('.pswp')[0];
                         var items = [];
+                        var indexes = [];
                         var firstSlides = [];
                         var options = {
                                 history: false,
-                                focus: false,
                                 showAnimationDuration: 0,
                                 hideAnimationDuration: 0
                         };
 
+                        //creating array of slides
                         for(var i = 0, l = smallImages.length; i < l; i += 1){
                                 items.push({
-                                        w: 1024,
-                                        h: 768,
+                                        msrc: smallImages[i].img,
+                                        w: 1000,
+                                        h: 663,
                                         index: i
-                                });           
+                                });
+                                console.log(items[i])           
                         };
-                        for(var i = 0, l = 3; i < l; i += 1){
-                                firstSlides.push(promises[index+i]);                 
+                        
+
+
+                        if(index === 0){
+                                indexes.push(items.length-1);
+                                indexes.push(index);                
+                                indexes.push(index+1);
+                        } else if (index === promises.length-1) {
+                                indexes.push(items.length-2);
+                                indexes.push(index);                
+                                indexes.push(0);                                
+                        } else {
+                                indexes.push(index-1);
+                                indexes.push(index);                
+                                indexes.push(index+1);   
+                        };
+
+                        for(var i = 0, l = indexes.length; i < l; i += 1){
+                                firstSlides.push(promises[indexes[i]]);
                         };
 
                         $q.all(firstSlides)
                         .then(function(data){
                                 for(var i = 0, l = data.length; i < l; i += 1){
-                                        items[index+i].src = data[i];                 
+                                        items[indexes[i]].src = data[i];                 
                                 };
                                 var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
                                 gallery.init();
@@ -51,15 +71,24 @@
                                 $q.all(promises)
                                 .then(function(data){
                                         for(var i = 0, l = gallery.items.length; i < l; i += 1){
-                                                if(gallery.items[i].src !== data[i]){
-
-                                                       gallery.items[i].src = data[i];         
+                                                if(i !== indexes[i]){
+                                                        gallery.items[i].src = data[i];
+                                                        gallery.items[i].w = 1000,
+                                                        gallery.items[i].h = 663        
                                                 } else {
-                                                        console.log(i)
+                                                        console.log(i);
+                                                        console.log(gallery.items);
                                                 };              
                                         };
+
+/*                                        gallery.listen('imageLoadComplete', function(index, item) { 
+                                                item.w = 1024,
+                                                item.h = 768
+                                        });*/   
                                 })        
                         });
+
+                                  
                         
 
                 };    

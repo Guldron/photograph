@@ -17,7 +17,7 @@
             function uploadImages(images) {
 
                     var optSmall = { width : 320, height : 200 };
-                    var optNormal = { width : 1024, height : 768 };
+                    var optNormal = { width : 1000, height : 663 };
                     var arraOfNames = makeArrayOfNames(images.length);
                     var deferred = $q.defer();
                     var responses = [];
